@@ -1,0 +1,16 @@
+# Target build directories
+**/target/
+target/
+
+# Maven standalone download
+**/.maven/
+.maven/
+.tmp_maven/
+maven.zip
+
+# IDE and OS files
+.idea/
+*.iml
+.DS_Store
+Thumbs.db
+*.log

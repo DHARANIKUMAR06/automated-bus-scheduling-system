@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DTC - Driver Management</title>
+    <!-- Bootstrap 5 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Bootstrap Icons -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css" rel="stylesheet">
+    <!-- Custom Style Sheet -->
+    <link href="/css/styles.css" rel="stylesheet">
+</head>
+<body>
+
+    <!-- Sidebar Navigation -->
+    <div class="sidebar">
+        <div class="sidebar-brand">
+            <i class="bi bi-bus-front-fill" style="font-size: 2.2rem; color: var(--primary-color)"></i>
+            <h3>DTC Management</h3>
+        </div>
+        <ul class="sidebar-menu">
+            <li><a href="/dashboard.html"><i class="bi bi-speedometer2"></i> Dashboard</a></li>
+            <li><a href="/buses.html"><i class="bi bi-truck"></i> Bus Fleet</a></li>
+            <li class="active"><a href="/drivers.html"><i class="bi bi-person-badge"></i> Drivers</a></li>
+            <li><a href="/conductors.html"><i class="bi bi-people"></i> Conductors</a></li>
+            <li><a href="/routes.html"><i class="bi bi-map"></i> Route Details</a></li>
+            <li><a href="/schedules.html"><i class="bi bi-calendar3"></i> Schedule Planner</a></li>
+            <li><a href="/trips.html"><i class="bi bi-play-circle"></i> Live Trips</a></li>
+            <li><a href="/maintenance.html"><i class="bi bi-tools"></i> Maintenance</a></li>
+            <li><a href="/reports.html"><i class="bi bi-file-earmark-bar-graph"></i> Report Center</a></li>
+            <li><a href="/settings.html"><i class="bi bi-gear"></i> Settings</a></li>
+        </ul>
+        <div class="sidebar-footer">
+            <div class="user-profile">
+                <div class="user-avatar" id="profile-avatar-letter">A</div>
+                <div class="user-details">
+                    <div class="user-name" id="profile-user-name">Admin User</div>
+                    <div class="user-role" id="profile-user-role">Administrator</div>
+                </div>
+                <a href="#" onclick="logoutUser()" title="Logout" style="color: rgba(255,255,255,0.6)"><i class="bi bi-power" style="font-size: 1.2rem"></i></a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main Wrapper -->
+    <div class="main-wrapper">
+        <!-- Top Navbar -->
+        <div class="topbar">
+            <div class="page-title">
+                <h4>Driver Registry</h4>
+            </div>
+            <div class="topbar-actions">
+                <div class="theme-toggle" id="theme-toggle-btn" title="Toggle Theme">
+                    <i class="bi bi-moon-fill"></i>
+                </div>
+            </div>
+        </div>
+
+        <!-- Content Body -->
+        <div class="content-body">
+            <!-- License Expiry Warnings Banner -->
+            <div class="alert alert-danger d-flex align-items-center gap-3 d-none animated-fade mb-4" id="expiry-warning-banner">
+                <i class="bi bi-exclamation-triangle-fill" style="font-size: 1.5rem"></i>
+                <div>
+                    <h6 class="m-0 fw-bold">Critical Alert: Driver Licenses Expiring Soon</h6>
+                    <p class="m-0 small" id="expiry-warning-message">Some drivers have licenses expiring in under 30 days. Please arrange renewals immediately.</p>
+                </div>
+            </div>
+
+            <div class="glass-panel animated-fade">
+                <div class="d-flex justify-content-between align-items-center mb-4 flex-wrap gap-3">
+                    <div class="d-flex align-items-center gap-2">
+                        <input type="text" id="search-driver-input" class="form-control form-control-custom" style="width: 250px;" placeholder="Search by name or license...">
+                        <button class="btn btn-primary-custom" onclick="loadDrivers()"><i class="bi bi-search"></i> Search</button>
+                    </div>
+                    <button class="btn btn-primary-custom" id="add-driver-btn" data-bs-toggle="modal" data-bs-target="#driverModal" onclick="openCreateModal()"><i class="bi bi-plus-lg"></i> Add New Driver</button>
+                </div>
+
+                <div class="table-responsive">
+                    <table class="custom-table">
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>Name</th>
+                                <th>License Number</th>
+                                <th>License Expiry</th>
+                                <th>Experience</th>
+                                <th>Status</th>
+                                <th>Depot</th>
+                                <th>Phone</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="driver-table-body">
+                            <!-- Populated dynamically via JS -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Driver Save/Edit Modal -->
+    <div class="modal fade" id="driverModal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content modal-content-custom text-white">
+                <div class="modal-header border-secondary">
+                    <h5 class="modal-title fw-bold" id="driverModalTitle">Add New Driver</h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <form id="driver-form">
+                    <input type="hidden" id="driver-id">
+                    <div class="modal-body">
+                        <!-- User account creation fields (only visible during creation) -->
+                        <div id="credentials-section">
+                            <div class="mb-3">
+                                <label for="driver-username" class="form-label">Username (For Portal Login)</label>
+                                <input type="text" class="form-control form-control-custom" id="driver-username" placeholder="e.g. sukhvinder" required>
+                            </div>
+                            <div class="mb-3">
+                                <label for="driver-password" class="form-label">Temporary Password</label>
+                                <input type="password" class="form-control form-control-custom" id="driver-password" placeholder="Min 6 characters">
+                            </div>
+                        </div>
+                        <div class="mb-3">
+                            <label for="driver-name" class="form-label">Full Name</label>
+                            <input type="text" class="form-control form-control-custom" id="driver-name" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="driver-email" class="form-label">Email</label>
+                            <input type="email" class="form-control form-control-custom" id="driver-email">
+                        </div>
+                        <div class="mb-3">
+                            <label for="driver-phone" class="form-label">Phone</label>
+                            <input type="text" class="form-control form-control-custom" id="driver-phone">
+                        </div>
+                        <div class="mb-3">
+                            <label for="driver-license" class="form-label">License Number</label>
+                            <input type="text" class="form-control form-control-custom" id="driver-license" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="driver-expiry" class="form-label">License Expiry Date</label>
+                            <input type="date" class="form-control form-control-custom" id="driver-expiry" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="driver-experience" class="form-label">Experience (Years)</label>
+                            <input type="number" class="form-control form-control-custom" id="driver-experience" min="0" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="driver-status" class="form-label">Status</label>
+                            <select class="form-select form-control-custom" id="driver-status" required>
+                                <option value="AVAILABLE">AVAILABLE</option>
+                                <option value="ON_TRIP">ON TRIP</option>
+                                <option value="LEAVE">LEAVE</option>
+                                <option value="SUSPENDED">SUSPENDED</option>
+                            </select>
+                        </div>
+                        <div class="mb-3">
+                            <label for="driver-depot" class="form-label">Assigned Depot</label>
+                            <select class="form-select form-control-custom" id="driver-depot" required>
+                                <option value="1">Rajghat Depot-I</option>
+                                <option value="2">Indraprastha Depot</option>
+                                <option value="3">Sukhdev Vihar Depot</option>
+                            </select>
+                        </div>
+                        <div class="mb-3">
+                            <label for="driver-bus" class="form-label">Assigned Bus ID (Optional)</label>
+                            <select class="form-select form-control-custom" id="driver-bus">
+                                <option value="">None</option>
+                                <option value="1">DL-1PD-2034</option>
+                                <option value="2">DL-1PD-4412</option>
+                                <option value="3">DL-1PD-8876</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="modal-footer border-secondary">
+                        <button type="button" class="btn btn-secondary text-white" style="background: var(--text-secondary); border: none" data-bs-dismiss="modal">Cancel</button>
+                        <button type="submit" class="btn btn-primary-custom">Save Driver</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Bootstrap Bundle JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <!-- API JS -->
+    <script src="/js/api.js"></script>
+    <!-- Drivers Script -->
+    <script src="/js/drivers.js"></script>
+</body>
+</html>

@@ -1,0 +1,20 @@
+# Target build directory
+/target/
+*.class
+
+# Log files
+*.log
+
+# Project files
+.classpath
+.project
+.settings/
+.idea/
+*.iml
+.DS_Store
+
+# Maven wrapper files (optional)
+# /.mvn/wrapper/maven-wrapper.jar
+
+# Crash logs
+err_pid*

@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DTC - Live Operations</title>
+    <!-- Bootstrap 5 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Bootstrap Icons -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css" rel="stylesheet">
+    <!-- Custom Style Sheet -->
+    <link href="/css/styles.css" rel="stylesheet">
+</head>
+<body>
+
+    <!-- Sidebar Navigation -->
+    <div class="sidebar">
+        <div class="sidebar-brand">
+            <i class="bi bi-bus-front-fill" style="font-size: 2.2rem; color: var(--primary-color)"></i>
+            <h3>DTC Management</h3>
+        </div>
+        <ul class="sidebar-menu">
+            <li><a href="/dashboard.html"><i class="bi bi-speedometer2"></i> Dashboard</a></li>
+            <li><a href="/buses.html"><i class="bi bi-truck"></i> Bus Fleet</a></li>
+            <li><a href="/drivers.html"><i class="bi bi-person-badge"></i> Drivers</a></li>
+            <li><a href="/conductors.html"><i class="bi bi-people"></i> Conductors</a></li>
+            <li><a href="/routes.html"><i class="bi bi-map"></i> Route Details</a></li>
+            <li><a href="/schedules.html"><i class="bi bi-calendar3"></i> Schedule Planner</a></li>
+            <li class="active"><a href="/trips.html"><i class="bi bi-play-circle"></i> Live Trips</a></li>
+            <li><a href="/maintenance.html"><i class="bi bi-tools"></i> Maintenance</a></li>
+            <li><a href="/reports.html"><i class="bi bi-file-earmark-bar-graph"></i> Report Center</a></li>
+            <li><a href="/settings.html"><i class="bi bi-gear"></i> Settings</a></li>
+        </ul>
+        <div class="sidebar-footer">
+            <div class="user-profile">
+                <div class="user-avatar" id="profile-avatar-letter">A</div>
+                <div class="user-details">
+                    <div class="user-name" id="profile-user-name">Admin User</div>
+                    <div class="user-role" id="profile-user-role">Administrator</div>
+                </div>
+                <a href="#" onclick="logoutUser()" title="Logout" style="color: rgba(255,255,255,0.6)"><i class="bi bi-power" style="font-size: 1.2rem"></i></a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main Wrapper -->
+    <div class="main-wrapper">
+        <!-- Top Navbar -->
+        <div class="topbar">
+            <div class="page-title">
+                <h4>Live Trips & Dispatch Console</h4>
+            </div>
+            <div class="topbar-actions">
+                <div class="theme-toggle" id="theme-toggle-btn" title="Toggle Theme">
+                    <i class="bi bi-moon-fill"></i>
+                </div>
+            </div>
+        </div>
+
+        <!-- Content Body -->
+        <div class="content-body">
+            <!-- Filter Bar Panel -->
+            <div class="glass-panel animated-fade mb-4">
+                <div class="d-flex justify-content-between align-items-center flex-wrap gap-3">
+                    <div class="d-flex align-items-center gap-2">
+                        <label for="trip-filter-date" class="form-label m-0 text-secondary fw-bold" style="font-size: 0.85rem;">OPERATIONS DATE:</label>
+                        <input type="date" id="trip-filter-date" class="form-control form-control-custom" style="width: 200px;" onchange="loadTrips()">
+                    </div>
+                    
+                    <div class="form-check">
+                        <input class="form-check-input bg-transparent border-secondary" type="checkbox" id="only-live-checkbox" onchange="loadTrips()">
+                        <label class="form-check-label text-secondary fw-bold" for="only-live-checkbox" style="font-size: 0.85rem;">SHOW LIVE RUNNING TRIPS ONLY</label>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Trips Grid -->
+            <div class="glass-panel animated-fade">
+                <div class="table-responsive">
+                    <table class="custom-table">
+                        <thead>
+                            <tr>
+                                <th>Trip ID</th>
+                                <th>Route No</th>
+                                <th>Bus Number</th>
+                                <th>Driver Name</th>
+                                <th>Scheduled Dep/Arr</th>
+                                <th>Actual Dep/Arr</th>
+                                <th>Delay</th>
+                                <th>Current Checkpoint</th>
+                                <th>Status</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="trip-table-body">
+                            <!-- Populated dynamically -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Live Status Update Modal -->
+    <div class="modal fade" id="tripModal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content modal-content-custom text-white">
+                <div class="modal-header border-secondary">
+                    <h5 class="modal-title fw-bold"><i class="bi bi-broadcast"></i> Report Location & Delay Alert</h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <form id="trip-form">
+                    <input type="hidden" id="trip-id">
+                    <div class="modal-body">
+                        <div class="mb-3">
+                            <label for="trip-status" class="form-label">Trip Status</label>
+                            <select class="form-select form-control-custom" id="trip-status" required>
+                                <option value="SCHEDULED">SCHEDULED</option>
+                                <option value="EN_ROUTE">EN ROUTE (RUNNING)</option>
+                                <option value="DELAYED">DELAYED</option>
+                                <option value="COMPLETED">COMPLETED</option>
+                                <option value="CANCELLED">CANCELLED</option>
+                            </select>
+                        </div>
+                        <div class="mb-3">
+                            <label for="trip-delay" class="form-label">Delay Duration (Minutes)</label>
+                            <input type="number" class="form-control form-control-custom" id="trip-delay" min="0" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="trip-stop" class="form-label">Current Checkpoint / Stop</label>
+                            <input type="text" class="form-control form-control-custom" id="trip-stop" placeholder="e.g. Chirag Delhi crossing" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="trip-notes" class="form-label">Dispatcher Notes / Incident Cause</label>
+                            <textarea class="form-control form-control-custom" id="trip-notes" rows="3" placeholder="e.g. Heavy jam near metro construction sector."></textarea>
+                        </div>
+                    </div>
+                    <div class="modal-footer border-secondary">
+                        <button type="button" class="btn btn-secondary text-white" style="background: var(--text-secondary); border: none" data-bs-dismiss="modal">Cancel</button>
+                        <button type="submit" class="btn btn-primary-custom">Update Dispatch Console</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Bootstrap Bundle JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <!-- API JS -->
+    <script src="/js/api.js"></script>
+    <!-- Trips Script -->
+    <script src="/js/trips.js"></script>
+</body>
+</html>

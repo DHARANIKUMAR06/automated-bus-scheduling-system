@@ -1,0 +1,12 @@
+services:
+  - type: web
+    name: automated-bus-scheduling-system
+    env: java
+    rootDir: DHARANII
+    buildCommand: mvn clean package -DskipTests
+    startCommand: java -jar target/bus-management-1.0.0.jar
+    envVars:
+      - key: JAVA_VERSION
+        value: 21
+      - key: PORT
+        value: 8080
