@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Delhi Transport Corporation (DTC) - Redirecting</title>
+    <style>
+        body {
+            background-color: #0b0f19;
+            color: #ffffff;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            margin: 0;
+        }
+        .loader-wrapper {
+            text-align: center;
+        }
+        .spinner {
+            border: 4px solid rgba(255,255,255,0.1);
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            border-left-color: #3b82f6;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 20px;
+        }
+        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+    </style>
+    <script>
+        window.addEventListener('DOMContentLoaded', () => {
+            const token = localStorage.getItem('dtc_jwt_token');
+            if (token) {
+                window.location.replace('/dashboard.html');
+            } else {
+                window.location.replace('/login.html');
+            }
+        });
+    </script>
+</head>
+<body>
+    <div class="loader-wrapper">
+        <div class="spinner"></div>
+        <h2>Delhi Transport Corporation</h2>
+        <p style="color: #64748b">Loading application session...</p>
+    </div>
+</body>
+</html>

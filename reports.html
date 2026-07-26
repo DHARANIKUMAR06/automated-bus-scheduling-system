@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DTC - Report Center</title>
+    <!-- Bootstrap 5 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Bootstrap Icons -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css" rel="stylesheet">
+    <!-- Custom Style Sheet -->
+    <link href="/css/styles.css" rel="stylesheet">
+</head>
+<body>
+
+    <!-- Sidebar Navigation -->
+    <div class="sidebar">
+        <div class="sidebar-brand">
+            <i class="bi bi-bus-front-fill" style="font-size: 2.2rem; color: var(--primary-color)"></i>
+            <h3>DTC Management</h3>
+        </div>
+        <ul class="sidebar-menu">
+            <li><a href="/dashboard.html"><i class="bi bi-speedometer2"></i> Dashboard</a></li>
+            <li><a href="/buses.html"><i class="bi bi-truck"></i> Bus Fleet</a></li>
+            <li><a href="/drivers.html"><i class="bi bi-person-badge"></i> Drivers</a></li>
+            <li><a href="/conductors.html"><i class="bi bi-people"></i> Conductors</a></li>
+            <li><a href="/routes.html"><i class="bi bi-map"></i> Route Details</a></li>
+            <li><a href="/schedules.html"><i class="bi bi-calendar3"></i> Schedule Planner</a></li>
+            <li><a href="/trips.html"><i class="bi bi-play-circle"></i> Live Trips</a></li>
+            <li><a href="/maintenance.html"><i class="bi bi-tools"></i> Maintenance</a></li>
+            <li class="active"><a href="/reports.html"><i class="bi bi-file-earmark-bar-graph"></i> Report Center</a></li>
+            <li><a href="/settings.html"><i class="bi bi-gear"></i> Settings</a></li>
+        </ul>
+        <div class="sidebar-footer">
+            <div class="user-profile">
+                <div class="user-avatar" id="profile-avatar-letter">A</div>
+                <div class="user-details">
+                    <div class="user-name" id="profile-user-name">Admin User</div>
+                    <div class="user-role" id="profile-user-role">Administrator</div>
+                </div>
+                <a href="#" onclick="logoutUser()" title="Logout" style="color: rgba(255,255,255,0.6)"><i class="bi bi-power" style="font-size: 1.2rem"></i></a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main Wrapper -->
+    <div class="main-wrapper">
+        <!-- Top Navbar -->
+        <div class="topbar">
+            <div class="page-title">
+                <h4>System Reports Center</h4>
+            </div>
+            <div class="topbar-actions">
+                <div class="theme-toggle" id="theme-toggle-btn" title="Toggle Theme">
+                    <i class="bi bi-moon-fill"></i>
+                </div>
+            </div>
+        </div>
+
+        <!-- Content Body -->
+        <div class="content-body">
+            <div class="row">
+                <!-- 1. Bus Report -->
+                <div class="col-md-6 col-lg-4 mb-4">
+                    <div class="glass-panel animated-fade h-100 d-flex flex-column justify-content-between">
+                        <div>
+                            <div class="d-flex align-items-center gap-3 mb-3">
+                                <div class="stats-icon blue"><i class="bi bi-truck"></i></div>
+                                <h5 class="fw-bold m-0">Bus Fleet Audit</h5>
+                            </div>
+                            <p class="text-secondary small">Generates list of DTC vehicles, fuel capacities, mileage figures, and current deployment depots.</p>
+                        </div>
+                        <div class="d-flex gap-2 mt-3">
+                            <button class="btn btn-sm btn-success w-50" onclick="downloadReport('buses', 'excel')"><i class="bi bi-file-earmark-spreadsheet"></i> Excel</button>
+                            <button class="btn btn-sm btn-danger w-50" onclick="downloadReport('buses', 'pdf')"><i class="bi bi-file-earmark-pdf"></i> PDF</button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 2. Driver Report -->
+                <div class="col-md-6 col-lg-4 mb-4">
+                    <div class="glass-panel animated-fade h-100 d-flex flex-column justify-content-between">
+                        <div>
+                            <div class="d-flex align-items-center gap-3 mb-3">
+                                <div class="stats-icon yellow"><i class="bi bi-person-badge"></i></div>
+                                <h5 class="fw-bold m-0">Driver Registry</h5>
+                            </div>
+                            <p class="text-secondary small">Compiles driver profile listings, phone logs, license numbers, experience, and expiry deadlines.</p>
+                        </div>
+                        <div class="d-flex gap-2 mt-3">
+                            <button class="btn btn-sm btn-success w-50" onclick="downloadReport('drivers', 'excel')"><i class="bi bi-file-earmark-spreadsheet"></i> Excel</button>
+                            <button class="btn btn-sm btn-danger w-50" onclick="downloadReport('drivers', 'pdf')"><i class="bi bi-file-earmark-pdf"></i> PDF</button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 3. Route Report -->
+                <div class="col-md-6 col-lg-4 mb-4">
+                    <div class="glass-panel animated-fade h-100 d-flex flex-column justify-content-between">
+                        <div>
+                            <div class="d-flex align-items-center gap-3 mb-3">
+                                <div class="stats-icon blue"><i class="bi bi-map"></i></div>
+                                <h5 class="fw-bold m-0">Transit Routes</h5>
+                            </div>
+                            <p class="text-secondary small">Contains path itineraries, starting terminals, stops counts, distances, and duration values.</p>
+                        </div>
+                        <div class="d-flex gap-2 mt-3">
+                            <button class="btn btn-sm btn-success w-50" onclick="downloadReport('routes', 'excel')"><i class="bi bi-file-earmark-spreadsheet"></i> Excel</button>
+                            <button class="btn btn-sm btn-danger w-50" onclick="downloadReport('routes', 'pdf')"><i class="bi bi-file-earmark-pdf"></i> PDF</button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 4. Schedule Report -->
+                <div class="col-md-6 col-lg-4 mb-4">
+                    <div class="glass-panel animated-fade h-100 d-flex flex-column justify-content-between">
+                        <div>
+                            <div class="d-flex align-items-center gap-3 mb-3">
+                                <div class="stats-icon yellow"><i class="bi bi-calendar3"></i></div>
+                                <h5 class="fw-bold m-0">Timetable Planner</h5>
+                            </div>
+                            <p class="text-secondary small">Fetches the daily master dispatch timetables, assigned bus numbers, shift types, and peak markers.</p>
+                        </div>
+                        <div class="d-flex gap-2 mt-3">
+                            <button class="btn btn-sm btn-success w-50" onclick="downloadReport('schedules', 'excel')"><i class="bi bi-file-earmark-spreadsheet"></i> Excel</button>
+                            <button class="btn btn-sm btn-danger w-50" onclick="downloadReport('schedules', 'pdf')"><i class="bi bi-file-earmark-pdf"></i> PDF</button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 5. Maintenance Report -->
+                <div class="col-md-6 col-lg-4 mb-4">
+                    <div class="glass-panel animated-fade h-100 d-flex flex-column justify-content-between">
+                        <div>
+                            <div class="d-flex align-items-center gap-3 mb-3">
+                                <div class="stats-icon blue"><i class="bi bi-tools"></i></div>
+                                <h5 class="fw-bold m-0">Maintenance Logs</h5>
+                            </div>
+                            <p class="text-secondary small">Dumps breakdown repair sheets, routine checkup ledger entries, servicing costs, and technician feedback.</p>
+                        </div>
+                        <div class="d-flex gap-2 mt-3">
+                            <button class="btn btn-sm btn-success w-50" onclick="downloadReport('maintenance', 'excel')"><i class="bi bi-file-earmark-spreadsheet"></i> Excel</button>
+                            <button class="btn btn-sm btn-danger w-50" onclick="downloadReport('maintenance', 'pdf')"><i class="bi bi-file-earmark-pdf"></i> PDF</button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 6. Operations Report -->
+                <div class="col-md-6 col-lg-4 mb-4">
+                    <div class="glass-panel animated-fade h-100 d-flex flex-column justify-content-between">
+                        <div>
+                            <div class="d-flex align-items-center gap-3 mb-3">
+                                <div class="stats-icon red"><i class="bi bi-signpost-split"></i></div>
+                                <h5 class="fw-bold m-0">Operations Sheet</h5>
+                            </div>
+                            <p class="text-secondary small">Compiles daily trip telemetry logs: actual departure/arrival, delayed minutes, and current stop logs.</p>
+                            <div class="mt-2">
+                                <label for="ops-date" class="form-label small text-secondary fw-bold m-0">TARGET DATE</label>
+                                <input type="date" class="form-control form-control-custom py-1 px-2 text-white" id="ops-date" style="font-size: 0.8rem">
+                            </div>
+                        </div>
+                        <div class="d-flex gap-2 mt-3">
+                            <button class="btn btn-sm btn-success w-50" onclick="downloadOperationsReport('excel')"><i class="bi bi-file-earmark-spreadsheet"></i> Excel</button>
+                            <button class="btn btn-sm btn-danger w-50" onclick="downloadOperationsReport('pdf')"><i class="bi bi-file-earmark-pdf"></i> PDF</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Bootstrap Bundle JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <!-- API JS -->
+    <script src="/js/api.js"></script>
+    <!-- Reports Script -->
+    <script src="/js/reports.js"></script>
+</body>
+</html>

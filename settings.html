@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DTC - settings & Utilities</title>
+    <!-- Bootstrap 5 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Bootstrap Icons -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css" rel="stylesheet">
+    <!-- Custom Style Sheet -->
+    <link href="/css/styles.css" rel="stylesheet">
+</head>
+<body>
+
+    <!-- Sidebar Navigation -->
+    <div class="sidebar">
+        <div class="sidebar-brand">
+            <i class="bi bi-bus-front-fill" style="font-size: 2.2rem; color: var(--primary-color)"></i>
+            <h3>DTC Management</h3>
+        </div>
+        <ul class="sidebar-menu">
+            <li><a href="/dashboard.html"><i class="bi bi-speedometer2"></i> Dashboard</a></li>
+            <li><a href="/buses.html"><i class="bi bi-truck"></i> Bus Fleet</a></li>
+            <li><a href="/drivers.html"><i class="bi bi-person-badge"></i> Drivers</a></li>
+            <li><a href="/conductors.html"><i class="bi bi-people"></i> Conductors</a></li>
+            <li><a href="/routes.html"><i class="bi bi-map"></i> Route Details</a></li>
+            <li><a href="/schedules.html"><i class="bi bi-calendar3"></i> Schedule Planner</a></li>
+            <li><a href="/trips.html"><i class="bi bi-play-circle"></i> Live Trips</a></li>
+            <li><a href="/maintenance.html"><i class="bi bi-tools"></i> Maintenance</a></li>
+            <li><a href="/reports.html"><i class="bi bi-file-earmark-bar-graph"></i> Report Center</a></li>
+            <li class="active"><a href="/settings.html"><i class="bi bi-gear"></i> Settings</a></li>
+        </ul>
+        <div class="sidebar-footer">
+            <div class="user-profile">
+                <div class="user-avatar" id="profile-avatar-letter">A</div>
+                <div class="user-details">
+                    <div class="user-name" id="profile-user-name">Admin User</div>
+                    <div class="user-role" id="profile-user-role">Administrator</div>
+                </div>
+                <a href="#" onclick="logoutUser()" title="Logout" style="color: rgba(255,255,255,0.6)"><i class="bi bi-power" style="font-size: 1.2rem"></i></a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main Wrapper -->
+    <div class="main-wrapper">
+        <!-- Top Navbar -->
+        <div class="topbar">
+            <div class="page-title">
+                <h4>Portal settings & Utilities</h4>
+            </div>
+            <div class="topbar-actions">
+                <div class="theme-toggle" id="theme-toggle-btn" title="Toggle Theme">
+                    <i class="bi bi-moon-fill"></i>
+                </div>
+            </div>
+        </div>
+
+        <!-- Content Body -->
+        <div class="content-body">
+            <div class="row">
+                <!-- Change Password Column -->
+                <div class="col-md-6 mb-4">
+                    <div class="glass-panel animated-fade h-100">
+                        <h5 class="fw-bold mb-4"><i class="bi bi-shield-lock text-primary"></i> Change Account Password</h5>
+                        <form id="change-password-form">
+                            <div class="mb-3">
+                                <label for="old-password" class="form-label">Current Password</label>
+                                <input type="password" class="form-control form-control-custom text-white" id="old-password" required>
+                            </div>
+                            <div class="mb-3">
+                                <label for="new-password" class="form-label">New Password</label>
+                                <input type="password" class="form-control form-control-custom text-white" id="new-password" required>
+                            </div>
+                            <div class="mb-4">
+                                <label for="confirm-password" class="form-label">Confirm New Password</label>
+                                <input type="password" class="form-control form-control-custom text-white" id="confirm-password" required>
+                            </div>
+                            <button type="submit" class="btn btn-primary-custom w-100 justify-content-center">Update Password</button>
+                        </form>
+                    </div>
+                </div>
+
+                <!-- Database Backup and Restore (Only visible to Admin) -->
+                <div class="col-md-6 mb-4 d-none" id="admin-backup-panel">
+                    <div class="glass-panel animated-fade h-100 d-flex flex-column justify-content-between">
+                        <div>
+                            <h5 class="fw-bold mb-4"><i class="bi bi-database-fill-gear text-success"></i> Backup & Restore Database</h5>
+                            <p class="text-secondary small">Generate SQL file archive downloads containing all schemas and tables, or upload a backup archive file to restore the operational databases.</p>
+                            
+                            <button class="btn btn-primary-custom w-100 justify-content-center mb-4" onclick="downloadDatabaseBackup()"><i class="bi bi-download"></i> Generate SQL Backup File</button>
+                            
+                            <hr class="border-secondary mb-4">
+                            
+                            <div class="mb-3">
+                                <label for="restore-file" class="form-label small text-secondary fw-bold">RESTORE FROM SQL SCRIPT</label>
+                                <input type="file" id="restore-file" class="form-control form-control-custom text-white" accept=".sql" onchange="restoreDatabaseBackup(event)">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Audit Logs section (Only visible to Admin) -->
+            <div class="row mt-2 d-none" id="admin-audit-panel">
+                <div class="col-12">
+                    <div class="glass-panel animated-fade">
+                        <h5 class="fw-bold mb-4"><i class="bi bi-journal-text text-info"></i> Administrative Audit Logs</h5>
+                        <div class="table-responsive" style="max-height: 350px; overflow-y: auto;">
+                            <table class="custom-table">
+                                <thead>
+                                    <tr>
+                                        <th>Timestamp</th>
+                                        <th>Username</th>
+                                        <th>Action Taken</th>
+                                        <th>IP Address</th>
+                                        <th>Details</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="audit-table-body">
+                                    <!-- Populated dynamically -->
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Bootstrap Bundle JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <!-- API JS -->
+    <script src="/js/api.js"></script>
+    <!-- Auth JS (holds pwd change form binds) -->
+    <script src="/js/auth.js"></script>
+    <!-- Settings JS -->
+    <script src="/js/settings.js"></script>
+</body>
+</html>

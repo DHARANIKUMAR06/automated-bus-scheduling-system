@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DTC Bus Scheduling - Login & Registration Portal</title>
+    <!-- Bootstrap 5 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Bootstrap Icons -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css" rel="stylesheet">
+    <!-- Custom Style Sheet -->
+    <link href="/css/styles.css" rel="stylesheet">
+    <style>
+        .auth-tabs {
+            display: flex;
+            background: rgba(255, 255, 255, 0.08);
+            border-radius: 12px;
+            padding: 4px;
+            margin-bottom: 24px;
+        }
+        .auth-tab-btn {
+            flex: 1;
+            padding: 10px;
+            border: none;
+            background: transparent;
+            color: rgba(255, 255, 255, 0.6);
+            font-weight: 600;
+            font-size: 0.9rem;
+            border-radius: 8px;
+            transition: all 0.3s;
+        }
+        .auth-tab-btn.active {
+            background: var(--primary-color);
+            color: #ffffff;
+            box-shadow: 0 4px 12px rgba(59, 130, 246, 0.4);
+        }
+        .quick-user-chip {
+            background: rgba(255, 255, 255, 0.07);
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            color: rgba(255, 255, 255, 0.85);
+            font-size: 0.78rem;
+            padding: 6px 12px;
+            border-radius: 20px;
+            cursor: pointer;
+            transition: all 0.2s;
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+            margin-right: 6px;
+            margin-bottom: 8px;
+        }
+        .quick-user-chip:hover {
+            background: var(--primary-color);
+            border-color: var(--primary-color);
+            color: #ffffff;
+            transform: translateY(-2px);
+        }
+        .toggle-password {
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body class="login-body">
+    <div class="login-card animated-fade" style="max-width: 480px;">
+        <div class="login-logo">
+            <i class="bi bi-bus-front-fill" style="font-size: 3.2rem; color: var(--primary-color)"></i>
+            <h4 class="mt-2 fw-bold">DTC Portal</h4>
+            <p class="text-secondary mb-0" style="font-size: 0.85rem">Automated Bus Scheduling & Route Management</p>
+        </div>
+
+        <!-- Auth Tabs -->
+        <div class="auth-tabs">
+            <button type="button" class="auth-tab-btn active" id="tab-login-btn" onclick="switchAuthTab('login')">
+                <i class="bi bi-box-arrow-in-right me-1"></i> Sign In
+            </button>
+            <button type="button" class="auth-tab-btn" id="tab-register-btn" onclick="switchAuthTab('register')">
+                <i class="bi bi-person-plus-fill me-1"></i> Register Account
+            </button>
+        </div>
+
+        <!-- LOGIN FORM -->
+        <form id="login-form">
+            <div class="mb-3">
+                <label for="username" class="form-label" style="font-size: 0.85rem; font-weight: 500">Username</label>
+                <div class="input-group">
+                    <span class="input-group-text bg-transparent border-secondary text-secondary"><i class="bi bi-person-fill"></i></span>
+                    <input type="text" id="username" class="form-control form-control-custom bg-transparent text-white border-secondary" placeholder="Enter username" required>
+                </div>
+            </div>
+            
+            <div class="mb-3">
+                <label for="password" class="form-label" style="font-size: 0.85rem; font-weight: 500">Password</label>
+                <div class="input-group">
+                    <span class="input-group-text bg-transparent border-secondary text-secondary"><i class="bi bi-lock-fill"></i></span>
+                    <input type="password" id="password" class="form-control form-control-custom bg-transparent text-white border-secondary" placeholder="Enter password" required>
+                    <span class="input-group-text bg-transparent border-secondary text-secondary toggle-password" onclick="togglePasswordVisibility('password', this)">
+                        <i class="bi bi-eye-fill"></i>
+                    </span>
+                </div>
+            </div>
+            
+            <div class="d-flex justify-content-between align-items-center mb-4" style="font-size: 0.8rem">
+                <div class="form-check">
+                    <input class="form-check-input bg-transparent border-secondary" type="checkbox" id="remember-me" checked>
+                    <label class="form-check-label text-secondary" for="remember-me">Remember me</label>
+                </div>
+                <a href="#" class="text-primary" style="font-weight: 500" onclick="showToast('Reset Instructions', 'Please contact your Depot Administrator to reset password.', 'info')">Forgot Password?</a>
+            </div>
+            
+            <button type="submit" class="btn btn-primary-custom w-100 py-3 justify-content-center mb-4">
+                <i class="bi bi-box-arrow-in-right"></i> Sign In
+            </button>
+
+            <!-- Quick Demo Accounts -->
+            <div class="pt-2 border-top border-secondary border-opacity-25">
+                <p class="text-secondary mb-2" style="font-size: 0.78rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px;">⚡ Quick Demo Login:</p>
+                <div>
+                    <span class="quick-user-chip" onclick="fillCredentials('DHARANIKUMAR', 'dharanikumar')">
+                        <i class="bi bi-star-fill text-warning"></i> DHARANIKUMAR
+                    </span>
+                    <span class="quick-user-chip" onclick="fillCredentials('admin', 'admin123')">
+                        <i class="bi bi-shield-lock-fill text-primary"></i> Admin
+                    </span>
+                    <span class="quick-user-chip" onclick="fillCredentials('manager', 'admin123')">
+                        <i class="bi bi-building"></i> Depot Manager
+                    </span>
+                    <span class="quick-user-chip" onclick="fillCredentials('scheduler', 'admin123')">
+                        <i class="bi bi-calendar-event"></i> Scheduler
+                    </span>
+                </div>
+            </div>
+        </form>
+
+        <!-- REGISTER FORM -->
+        <form id="register-form" style="display: none;">
+            <div class="row">
+                <div class="col-md-6 mb-3">
+                    <label for="reg-fullName" class="form-label" style="font-size: 0.85rem; font-weight: 500">Full Name</label>
+                    <div class="input-group">
+                        <span class="input-group-text bg-transparent border-secondary text-secondary"><i class="bi bi-card-heading"></i></span>
+                        <input type="text" id="reg-fullName" class="form-control form-control-custom bg-transparent text-white border-secondary" placeholder="e.g. Dharani Kumar" required>
+                    </div>
+                </div>
+
+                <div class="col-md-6 mb-3">
+                    <label for="reg-username" class="form-label" style="font-size: 0.85rem; font-weight: 500">Username</label>
+                    <div class="input-group">
+                        <span class="input-group-text bg-transparent border-secondary text-secondary"><i class="bi bi-person-badge"></i></span>
+                        <input type="text" id="reg-username" class="form-control form-control-custom bg-transparent text-white border-secondary" placeholder="Choose username" required>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-md-6 mb-3">
+                    <label for="reg-email" class="form-label" style="font-size: 0.85rem; font-weight: 500">Email Address</label>
+                    <div class="input-group">
+                        <span class="input-group-text bg-transparent border-secondary text-secondary"><i class="bi bi-envelope"></i></span>
+                        <input type="email" id="reg-email" class="form-control form-control-custom bg-transparent text-white border-secondary" placeholder="name@dtc.gov.in" required>
+                    </div>
+                </div>
+
+                <div class="col-md-6 mb-3">
+                    <label for="reg-phone" class="form-label" style="font-size: 0.85rem; font-weight: 500">Phone Number</label>
+                    <div class="input-group">
+                        <span class="input-group-text bg-transparent border-secondary text-secondary"><i class="bi bi-telephone"></i></span>
+                        <input type="tel" id="reg-phone" class="form-control form-control-custom bg-transparent text-white border-secondary" placeholder="10-digit phone">
+                    </div>
+                </div>
+            </div>
+
+            <div class="mb-3">
+                <label for="reg-role" class="form-label" style="font-size: 0.85rem; font-weight: 500">Select System Role</label>
+                <div class="input-group">
+                    <span class="input-group-text bg-transparent border-secondary text-secondary"><i class="bi bi-award-fill"></i></span>
+                    <select id="reg-role" class="form-select form-control-custom bg-dark text-white border-secondary">
+                        <option value="ROLE_SCHEDULER" selected>Chief Scheduler</option>
+                        <option value="ROLE_DEPOT_MANAGER">Depot Manager</option>
+                        <option value="ROLE_ADMIN">System Administrator</option>
+                        <option value="ROLE_DRIVER">Driver</option>
+                        <option value="ROLE_CONDUCTOR">Conductor</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-md-6 mb-3">
+                    <label for="reg-password" class="form-label" style="font-size: 0.85rem; font-weight: 500">Password</label>
+                    <div class="input-group">
+                        <span class="input-group-text bg-transparent border-secondary text-secondary"><i class="bi bi-lock"></i></span>
+                        <input type="password" id="reg-password" class="form-control form-control-custom bg-transparent text-white border-secondary" placeholder="Min 6 characters" required>
+                    </div>
+                </div>
+
+                <div class="col-md-6 mb-4">
+                    <label for="reg-confirmPassword" class="form-label" style="font-size: 0.85rem; font-weight: 500">Confirm Password</label>
+                    <div class="input-group">
+                        <span class="input-group-text bg-transparent border-secondary text-secondary"><i class="bi bi-check2-circle"></i></span>
+                        <input type="password" id="reg-confirmPassword" class="form-control form-control-custom bg-transparent text-white border-secondary" placeholder="Re-type password" required>
+                    </div>
+                </div>
+            </div>
+
+            <button type="submit" class="btn btn-primary-custom w-100 py-3 justify-content-center">
+                <i class="bi bi-person-check-fill"></i> Create Account & Sign In
+            </button>
+        </form>
+    </div>
+
+    <!-- API JS and Auth JS -->
+    <script src="/js/api.js"></script>
+    <script src="/js/auth.js"></script>
+</body>
+</html>
